@@ -10,12 +10,15 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from user_authentication_app.models import User
 from rest_framework.response import Response
 from .models import Post,Like
+
 # Create your views here.
 #
 
-# Posts
+# Get all Posts
 class GetAllPosts(APIView):
-    # authentication_classes = [JWTAuthentication]
+
+    authentication_classes = [JWTAuthentication]
+
     def get(self, request, format=None):
         posts = Post.objects.all()
         serializer = PostSerializer(posts, many=True)
@@ -23,7 +26,9 @@ class GetAllPosts(APIView):
 
 
 class PostViewSet(APIView):
-    # authentication_classes = [JWTAuthentication]
+    authentication_classes = [JWTAuthentication]
+
+    # Get Login Users Posts
     def get(self, request, format=None):
         posts = Post.objects.filter(user=request.user.id)
         if posts.exists():
@@ -32,7 +37,7 @@ class PostViewSet(APIView):
         else:
             return Response({'message': 'No posts found for the logged-in user.'}) 
      
-   
+    # Send a Post By Login User
     def post(self, request, format=None):
 
         serializer = PostSendSerializer(data=request.data)
@@ -45,9 +50,11 @@ class PostViewSet(APIView):
             return Response(serializer.errors, status=400)
         
 
-    
+
+# Delete a Post 
 class DeleteApiView(APIView):
-    # authentication_classes = [JWTAuthentication]
+    authentication_classes = [JWTAuthentication]
+
     def delete(self, request, pk=None):
         # login_user = User.objects.get(id=2)
         try:
@@ -59,9 +66,12 @@ class DeleteApiView(APIView):
         post.delete()
         return Response(status=204)
     
-"""update a post"""
+
+
+# For Update posts
 class UpdateApiView(APIView):
-    # authentication_classes = [JWTAuthentication]
+
+    authentication_classes = [JWTAuthentication]
     def put(self, request, pk=None):
         # login_user = User.objects.get(id=2)
         try:
@@ -77,9 +87,12 @@ class UpdateApiView(APIView):
 
         return Response(serializer.errors, status=400)
     
-# for post likes
+
+
+# For Like posts
 class PostLikeViewSet(APIView):
-   # authentication_classes = [JWTAuthentication]
+    authentication_classes = [JWTAuthentication]
+
     def post(self, request):
         # post_id = 3
         post_id = request.data.get('post_id')
@@ -91,7 +104,7 @@ class PostLikeViewSet(APIView):
         try:
             post = Post.objects.get(id=post_id)
             total_like=post.like
-            print("likes============",total_like)
+            # print("likes============",total_like)
         except Post.DoesNotExist:
             return Response({'detail': 'Post not found.'}, status=404)
 
@@ -113,17 +126,17 @@ class PostLikeViewSet(APIView):
 
 
 
-# for Dislike  post
-class DislikeLikeViewSet(APIView):
-       # authentication_classes = [JWTAuthentication]
+# For Dislike  Posts
+class DislikeViewSet(APIView):
+
+    authentication_classes = [JWTAuthentication]
+
     def post(self, request):
-        post_id = 3
-        # post_id = request.data.get('post_id')
-        user = User.objects.get(id=2)
-        # user = request.user
-        # user_id = user.id
-        user_id =2
-        
+        # post_id = 4
+        post_id = request.data.get('post_id')
+        # user = User.objects.get(id=5)
+        user = request.user
+       
         try:
             post = Post.objects.get(id=post_id)
             total_like=post.like
@@ -134,7 +147,10 @@ class DislikeLikeViewSet(APIView):
         try:
             existing_like = Like.objects.get(post=post, user=user)
             existing_like.delete()
-            total_like=total_like-1
+            if total_like == 0:
+                total_like=0
+            else:
+                total_like=total_like-1
             post.like=total_like
             post.save()
             return Response(status=204)

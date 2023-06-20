@@ -7,6 +7,7 @@ from datetime import date
 import holidays
 import geocoder
 
+# Serializer For Signup 
 class SignupSerializer(serializers.ModelSerializer):
     
     password2 = serializers.CharField(write_only = True)
@@ -33,22 +34,20 @@ class SignupSerializer(serializers.ModelSerializer):
         # Use geocoder to find the geolocation information
         g = geocoder.ip(ip)
         
-        # # Extract relevant information from the geocoder result
+        # Extract relevant information from the geocoder result
         latitude = g.latlng[0]
         longitude = g.latlng[1]
         city = g.city
         country = g.country
 
-        # # Print the geolocation information
-        print(f"Latitude: {latitude}")
-        print(f"Longitude: {longitude}")
-        print(f"City:=================== {city}")
-        print(f"Country:================ {country}")
+        
+        # print(f"Latitude:====== {latitude}")
+        # print(f"Longitude:== {longitude}")
+        # print(f"City:=================== {city}")
+        # print(f"Country:================ {country}")
         
         signup_date = date.today()
         
-          
-
         # Get the holidays for the specified country
         holiday_list = holidays.CountryHoliday(country, years=signup_date.year)
 

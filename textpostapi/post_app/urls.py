@@ -9,7 +9,7 @@ urlpatterns = [
     path('updatepost/<int:pk>', UpdateApiView.as_view()),
     path('deletepost/<int:pk>', DeleteApiView.as_view()),
     path('likepost/', PostLikeViewSet.as_view()),
-    path('dislikelikepost/', DislikeLikeViewSet.as_view()),
+    path('dislikepost/', DislikeViewSet.as_view()),
     
 
     
