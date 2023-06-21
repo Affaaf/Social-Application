@@ -16,8 +16,9 @@ from .models import Post,Like
 
 # Get all Posts
 class GetAllPosts(APIView):
-
+    
     authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
         posts = Post.objects.all()
@@ -26,6 +27,7 @@ class GetAllPosts(APIView):
 
 
 class PostViewSet(APIView):
+    permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
     # Get Login Users Posts
@@ -41,7 +43,6 @@ class PostViewSet(APIView):
     def post(self, request, format=None):
 
         serializer = PostSendSerializer(data=request.data)
-        # login_user=User.objects.get(id=5)
         
         if serializer.is_valid():
                 serializer.save(user=request.user)  
@@ -54,11 +55,10 @@ class PostViewSet(APIView):
 # Delete a Post 
 class DeleteApiView(APIView):
     authentication_classes = [JWTAuthentication]
-
+    permission_classes = [IsAuthenticated]
+    
     def delete(self, request, pk=None):
-        # login_user = User.objects.get(id=2)
         try:
-            # post = Post.objects.get(pk=1, user=login_user)
             post = Post.objects.get(pk=pk, user=request.user)
         except Post.DoesNotExist:
             return Response({'message': 'Post not found against this user'}, status=404)
@@ -70,12 +70,10 @@ class DeleteApiView(APIView):
 
 # For Update posts
 class UpdateApiView(APIView):
-
     authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def put(self, request, pk=None):
-        # login_user = User.objects.get(id=2)
         try:
-            # post = Post.objects.get(pk=pk, user=login_user)
             post = Post.objects.get(pk=pk, user=request.user)
         except Post.DoesNotExist:
             return Response({'message': 'Post not found against this user'}, status=404)
@@ -92,19 +90,16 @@ class UpdateApiView(APIView):
 # For Like posts
 class PostLikeViewSet(APIView):
     authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        # post_id = 3
         post_id = request.data.get('post_id')
-        # user = User.objects.get(id=2)
         user = request.user
         user_id = user.id
-        # user_id =2
         
         try:
             post = Post.objects.get(id=post_id)
             total_like=post.like
-            # print("likes============",total_like)
         except Post.DoesNotExist:
             return Response({'detail': 'Post not found.'}, status=404)
 
@@ -128,13 +123,11 @@ class PostLikeViewSet(APIView):
 
 # For Dislike  Posts
 class DislikeViewSet(APIView):
-
     authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        # post_id = 4
         post_id = request.data.get('post_id')
-        # user = User.objects.get(id=5)
         user = request.user
        
         try:
