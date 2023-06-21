@@ -46,6 +46,6 @@ http://localhost:8000/post/posttext/ (GET) (Get Post Against Login User)
 http://localhost:8000/post/getallpost/ (GET) (Get all Posts)
 http://localhost:8000/post/updatepost/1/ (PUT) (Update a Post Against a Login User And Send PK Of Post)
 http://localhost:8000/post/deletepost/1/ (DELETE) (Delete a Post Against Login User)
-http://localhost:8000/post/likepost/ (POST) (like a post)
-http://localhost:8000/post/dislikepost/ (POSt) (Dislike a post)
+http://localhost:8000/post/likepost/ (POST) (like a post send post_id to whom like )
+http://localhost:8000/post/dislikepost/ (POSt) (Dislike a post, send post_id to whom dislike)
 ```
