@@ -14,6 +14,9 @@ from rest_framework.response import Response
 # For Signup 
 class SignupView(generics.CreateAPIView):
     serializer_class = SignupSerializer
+    
+    def perform_create(self, serializer):
+        serializer.save()
 
 # For Login User
 class LoginAPIView(APIView):
